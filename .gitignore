@@ -75,3 +75,16 @@ Thumbs.db
 # Antigravity / Agent local logs & scratch
 .system_generated/
 *.log
+
+# LaTeX Auxiliary Files & Personal Documents
+*.aux
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.tex
+*.pdf
+anirudh.*
+
+
