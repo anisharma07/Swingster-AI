@@ -1,0 +1,9 @@
+{
+  "name": "mtech-research-wiki",
+  "version": "1.0.0",
+  "description": "LM Wiki Reader for M.Tech Research Documentation",
+  "scripts": {
+    "wiki": "./run_wiki.sh",
+    "start": "python3 wiki_server.py --port 5111"
+  }
+}

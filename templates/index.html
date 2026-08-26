@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Equities Swing Trading Scanner & Research Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navbar -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="logo-icon">🇮🇳</div>
+                <div>
+                    <h1 class="logo-title">INDIAN EQUITIES <span>SWING RESEARCH</span></h1>
+                    <p class="logo-subtitle">NSE Data • Screener.in • Relative Strength • Corporate Events</p>
+                </div>
+            </div>
+            
+            <div class="nav-center-regime" id="nav-regime-pill">
+                <span class="pulse-dot"></span>
+                <span id="nav-regime-text">Loading Market Regime...</span>
+            </div>
+
+            <nav class="nav-tabs">
+                <button class="tab-btn active" data-tab="scanner-view">📊 Scanner</button>
+                <button class="tab-btn" data-tab="deepdive-view">🔍 360° Stock Deep-Dive</button>
+                <button class="tab-btn" data-tab="regime-view">🌐 Market & Sectors</button>
+                <button class="tab-btn" data-tab="tester-view">🛠 Manual Fetch Tester</button>
+            </nav>
+        </header>
+
+        <!-- Market Regime Banner Bar -->
+        <section class="regime-strip" id="regime-strip">
+            <div class="regime-card">
+                <span class="regime-label">NIFTY 50</span>
+                <div class="regime-val-group">
+                    <span class="regime-val" id="strip-nifty-price">--</span>
+                    <span class="regime-chg" id="strip-nifty-chg">--</span>
+                </div>
+                <span class="regime-sub" id="strip-nifty-trend">--</span>
+            </div>
+
+            <div class="regime-card">
+                <span class="regime-label">NIFTY BANK</span>
+                <div class="regime-val-group">
+                    <span class="regime-val" id="strip-bank-price">--</span>
+                    <span class="regime-chg" id="strip-bank-chg">--</span>
+                </div>
+                <span class="regime-sub" id="strip-bank-trend">--</span>
+            </div>
+
+            <div class="regime-card">
+                <span class="regime-label">INDIA VIX</span>
+                <div class="regime-val-group">
+                    <span class="regime-val" id="strip-vix-val">--</span>
+                    <span class="regime-chg" id="strip-vix-chg">--</span>
+                </div>
+                <span class="regime-sub" id="strip-vix-status">--</span>
+            </div>
+
+            <div class="regime-card">
+                <span class="regime-label">SECTOR BREADTH</span>
+                <div class="regime-val-group">
+                    <span class="regime-val text-accent" id="strip-breadth-pct">--</span>
+                </div>
+                <span class="regime-sub" id="strip-breadth-sub">Sectors above 20 EMA</span>
+            </div>
+
+            <div class="regime-guidance-card">
+                <div class="guidance-title">STRATEGY GUIDANCE</div>
+                <div class="guidance-text" id="strip-guidance-text">Checking market regime conditions...</div>
+            </div>
+        </section>
+
+        <!-- Main Content Views -->
+        <main class="main-content">
+            
+            <!-- VIEW 1: SCANNER & RANKED SETUPS -->
+            <section id="scanner-view" class="view-panel active">
+                <div class="panel-header">
+                    <div>
+                        <h2>Swing Setup Scanner</h2>
+                        <p class="panel-desc">Multi-factor filtering across liquid Indian universe: Technicals + Volume + RS vs NIFTY + Screener + NSE Results Calendar</p>
+                    </div>
+                </div>
+
+                <!-- Scanner Controls & Filters -->
+                <div class="scanner-toolbar glass-card">
+                    <div class="filter-group">
+                        <label for="universe-select">Market Universe:</label>
+                        <select id="universe-select" class="form-select">
+                            <option value="swing_top30">🔥 Top Swing & Momentum 30</option>
+                            <option value="nifty_smallcap">🚀 NIFTY Smallcap 100 (High-Beta & Small Caps)</option>
+                            <option value="nifty_midcap">⚡ NIFTY Midcap 100 (Growth Midcaps)</option>
+                            <option value="nifty50">🏛 NIFTY 50 (Large Caps)</option>
+                            <option value="nifty100">📈 NIFTY 100 (Large & Midcaps)</option>
+                            <option value="nifty500">🌐 NIFTY 500 (Broad Market Universe)</option>
+                            <option value="theme_defense">🛡 Defense & Railways Basket</option>
+                            <option value="theme_it">💻 IT & Tech Basket</option>
+                            <option value="theme_fin">🏦 Banking & Financial Markets</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="setup-select">Setup Filter:</label>
+                        <select id="setup-select" class="form-select">
+                            <option value="all">All Setups (Ranked by Score)</option>
+                            <option value="breakout">Breakouts (52W High / Range Breakout)</option>
+                            <option value="pullback">Pullbacks (20 EMA / 50 EMA Support)</option>
+                            <option value="volume">Volume Surges (>1.4x 20-Day SMA)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group score-slider-group">
+                        <label for="score-slider">Min Score: <span id="score-val-label">0</span>/100</label>
+                        <input type="range" id="score-slider" min="0" max="90" step="5" value="0" class="form-range">
+                    </div>
+
+                    <button id="run-scan-btn" class="btn btn-primary">
+                        <span class="btn-icon">⚡</span> Run Market Scan
+                    </button>
+                </div>
+
+                <!-- Scan Status & Progress -->
+                <div id="scan-progress-bar" class="progress-container hidden">
+                    <div class="progress-bar-inner"></div>
+                    <span class="progress-text">Scanning Indian universe via NSE, Screener & Technicals...</span>
+                </div>
+
+                <!-- Candidate Results Table -->
+                <div class="results-container glass-card">
+                    <div class="results-header-strip">
+                        <h3>Ranked Candidates (<span id="candidate-count">0</span>)</h3>
+                        <div class="quick-pills">
+                            <span class="badge badge-success">Top RS vs NIFTY</span>
+                            <span class="badge badge-warning">Event-Risk Checked</span>
+                            <span class="badge badge-info">Screener Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="candidates-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Stock</th>
+                                    <th>Composite Score</th>
+                                    <th>Price (1D %)</th>
+                                    <th>Primary Setup</th>
+                                    <th>Volume Mult</th>
+                                    <th>RS vs NIFTY</th>
+                                    <th>Quarterly Results</th>
+                                    <th>Event Risk</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="candidates-tbody">
+                                <tr>
+                                    <td colspan="10" class="empty-state">Click "Run Market Scan" above to analyze the Indian market universe.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: 360° STOCK DEEP-DIVE & THESIS CARD -->
+            <section id="deepdive-view" class="view-panel">
+                <div class="deepdive-search-strip glass-card">
+                    <div class="search-input-group">
+                        <label for="deepdive-input">Enter Indian Stock Symbol (NSE):</label>
+                        <div class="input-with-btn">
+                            <input type="text" id="deepdive-input" placeholder="e.g. TRENT, BEL, HAL, BSE, DIXON, RELIANCE" value="TRENT" class="form-input">
+                            <button id="deepdive-btn" class="btn btn-primary">Analyze Stock</button>
+                        </div>
+                    </div>
+                    <div class="quick-picks">
+                        <span>Quick Picks:</span>
+                        <button class="chip-btn" data-sym="TRENT">TRENT</button>
+                        <button class="chip-btn" data-sym="BEL">BEL</button>
+                        <button class="chip-btn" data-sym="HAL">HAL</button>
+                        <button class="chip-btn" data-sym="BSE">BSE</button>
+                        <button class="chip-btn" data-sym="DIXON">DIXON</button>
+                        <button class="chip-btn" data-sym="CDSL">CDSL</button>
+                        <button class="chip-btn" data-sym="MAZDOCK">MAZDOCK</button>
+                        <button class="chip-btn" data-sym="RELIANCE">RELIANCE</button>
+                    </div>
+                </div>
+
+                <div id="deepdive-loading" class="progress-container hidden">
+                    <div class="progress-bar-inner"></div>
+                    <span class="progress-text">Fetching comprehensive 360° data from NSE, Screener.in & technical scanner...</span>
+                </div>
+
+                <!-- Stock Thesis Card Container -->
+                <div id="deepdive-content" class="deepdive-layout">
+                    <!-- Populated dynamically by app.js -->
+                </div>
+            </section>
+
+            <!-- VIEW 3: MARKET REGIME & SECTORS -->
+            <section id="regime-view" class="view-panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Indian Market Regime & Sector Breadth</h2>
+                        <p class="panel-desc">Macro environment health check for swing trading decisions</p>
+                    </div>
+                    <button id="refresh-regime-btn" class="btn btn-secondary">🔄 Refresh Regime</button>
+                </div>
+
+                <div class="regime-grid">
+                    <div class="glass-card regime-macro-box">
+                        <h3>Macro Status & Guidance</h3>
+                        <div class="regime-huge-badge" id="regime-main-badge">🟢 Bullish Regime</div>
+                        <p class="regime-main-guidance" id="regime-main-guidance">Evaluating market posture...</p>
+                        
+                        <div class="macro-stats-row">
+                            <div class="stat-tile">
+                                <span class="stat-name">NIFTY 50 20 EMA</span>
+                                <span class="stat-num" id="macro-nifty-20ema">--</span>
+                            </div>
+                            <div class="stat-tile">
+                                <span class="stat-name">NIFTY 50 50 EMA</span>
+                                <span class="stat-num" id="macro-nifty-50ema">--</span>
+                            </div>
+                            <div class="stat-tile">
+                                <span class="stat-name">INDIA VIX</span>
+                                <span class="stat-num" id="macro-vix-val">--</span>
+                            </div>
+                            <div class="stat-tile">
+                                <span class="stat-name">Breadth (>20 EMA)</span>
+                                <span class="stat-num text-accent" id="macro-breadth-pct">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card sector-heatmap-box">
+                        <h3>NSE Sector Performance Matrix</h3>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="sectors-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sector</th>
+                                        <th>Price</th>
+                                        <th>1D %</th>
+                                        <th>5D %</th>
+                                        <th>20D %</th>
+                                        <th>Trend vs 20/50 EMA</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sectors-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: MANUAL FETCHER TESTING STUDIO -->
+            <section id="tester-view" class="view-panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Manual Data Fetcher Testing Studio</h2>
+                        <p class="panel-desc">Test individual Python fetch modules on-demand with live visual responses and raw JSON inspector</p>
+                    </div>
+                </div>
+
+                <div class="glass-card tester-controls">
+                    <div class="tester-input-row">
+                        <div class="filter-group">
+                            <label for="tester-target">Fetch Target Module:</label>
+                            <select id="tester-target" class="form-select">
+                                <option value="technicals">1. Technical Indicators & Trade Structure (OHLCV)</option>
+                                <option value="screener">2. Screener.in Fundamentals & Ratios (Scraper)</option>
+                                <option value="events">3. NSE Results Calendar, Board Meetings & Corporate Actions</option>
+                                <option value="news">4. Google News RSS Feed</option>
+                                <option value="quote">5. Live NSE Quote Equity</option>
+                                <option value="regime">6. Market Regime & Indices</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="tester-symbol">Stock Symbol (NSE):</label>
+                            <input type="text" id="tester-symbol" value="TRENT" class="form-input">
+                        </div>
+
+                        <button id="run-test-btn" class="btn btn-primary">
+                            <span>🚀</span> Run Fetch Request
+                        </button>
+                    </div>
+                </div>
+
+                <div id="tester-loading" class="progress-container hidden">
+                    <div class="progress-bar-inner"></div>
+                    <span class="progress-text">Executing fetch request...</span>
+                </div>
+
+                <div class="tester-output-grid">
+                    <!-- Left: Formatted Visual Card -->
+                    <div class="glass-card tester-visual-card">
+                        <h3>Visual Rendered Output</h3>
+                        <div id="tester-visual-content" class="tester-visual-body">
+                            <div class="empty-state">Select a module and click "Run Fetch Request" to preview data.</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Raw JSON Output -->
+                    <div class="glass-card tester-json-card">
+                        <div class="json-header">
+                            <h3>Raw JSON Response</h3>
+                            <button id="copy-json-btn" class="btn btn-xs">Copy JSON</button>
+                        </div>
+                        <pre id="tester-json-content" class="json-viewer">{}</pre>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

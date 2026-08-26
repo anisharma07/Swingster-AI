@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LM Wiki Reader — Research & Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CDN dependencies for rich markdown, math, highlighting, mermaid -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout" id="app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+              <path d="M6 6h10"></path>
+              <path d="M6 10h10"></path>
+              <path d="M6 14h7"></path>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">LM Wiki Reader</span>
+            <span class="brand-subtitle">Research Hub :5111</span>
+          </div>
+        </div>
+
+        <div class="live-indicator" title="Connected to File Watcher (SSE)">
+          <span class="pulse-dot"></span>
+          <span class="indicator-text">Live Sync</span>
+        </div>
+      </div>
+
+      <!-- Quick Search Trigger -->
+      <div class="sidebar-search-trigger" id="search-trigger" title="Quick Search (Press ⌘K or /)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <span class="search-placeholder">Search wiki...</span>
+        <kbd class="hotkey-badge">⌘K</kbd>
+      </div>
+
+      <!-- Action Button: Log New Research -->
+      <div class="sidebar-action-container">
+        <button class="btn-log-research" id="btn-open-log-modal" title="Log New Research Entry">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Log New Research</span>
+        </button>
+      </div>
+
+      <!-- View Mode Tabs (By Date vs By Category) -->
+      <div class="view-mode-tabs" id="view-mode-tabs">
+        <button class="view-mode-tab active" data-mode="date" title="Group research date-wise">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>By Date</span>
+        </button>
+        <button class="view-mode-tab" data-mode="category" title="Group by folder category">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+            <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+          </svg>
+          <span>By Category</span>
+        </button>
+      </div>
+
+      <!-- Quick Category Filter Chips (shown when in category mode or filtering) -->
+      <div class="category-filters" id="category-filters">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="Raw Papers">Papers</button>
+        <button class="filter-chip" data-filter="Playbooks & Output">Playbooks</button>
+        <button class="filter-chip" data-filter="Hub & Index">Hubs</button>
+      </div>
+
+      <!-- Filter text input -->
+      <div class="tree-quick-filter">
+        <input type="text" id="tree-filter-input" placeholder="Filter research entries..." autocomplete="off">
+        <button id="tree-clear-filter" class="btn-icon-subtle" title="Clear filter" style="display: none;">✕</button>
+      </div>
+
+      <!-- Sidebar Navigation Tree -->
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <div class="nav-loading">
+          <div class="spinner"></div>
+          <span>Loading research wiki...</span>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="sidebar-stats" id="sidebar-stats">
+          <span id="stat-total-docs">0 docs</span>
+        </div>
+        <div class="sidebar-footer-actions">
+          <button id="btn-graph-view" class="btn-icon" title="Interactive Knowledge Graph (⌘G)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </button>
+          <button id="btn-theme-toggle" class="btn-icon" title="Toggle Light / Dark Theme">
+            <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT PANE -->
+    <main class="main-content" id="main-content">
+      <!-- Sticky Top Bar -->
+      <header class="topbar" id="topbar">
+        <div class="topbar-left">
+          <button id="btn-toggle-sidebar" class="btn-icon" title="Toggle Sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+              <path d="M9 3v18"></path>
+            </svg>
+          </button>
+          <div class="breadcrumbs" id="breadcrumbs">
+            <span class="crumb root">.wiki</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="doc-meta-stats" id="doc-meta-stats">
+            <span id="stat-doc-date" class="stat-date-badge" title="Research Date">📅 15 Aug 2026</span>
+            <span class="stat-divider">•</span>
+            <span id="stat-read-time" title="Estimated Reading Time">⏱ 1 min</span>
+            <span class="stat-divider">•</span>
+            <span id="stat-word-count" title="Word Count">120 words</span>
+          </div>
+
+          <div class="topbar-actions">
+            <!-- Font Size Adjust -->
+            <div class="btn-group font-sizer" title="Adjust Font Size">
+              <button id="btn-font-dec" class="btn-action-small">A-</button>
+              <button id="btn-font-inc" class="btn-action-small">A+</button>
+            </div>
+
+            <!-- View Raw Toggle -->
+            <button id="btn-view-raw" class="btn-action" title="Toggle Raw Markdown">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              <span>Raw</span>
+            </button>
+
+            <!-- Copy Markdown -->
+            <button id="btn-copy-md" class="btn-action" title="Copy Raw Markdown">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+              </svg>
+              <span>Copy</span>
+            </button>
+
+            <!-- Print / PDF -->
+            <button id="btn-print" class="btn-action" title="Print / Export as Clean PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect width="12" height="8" x="6" y="14"></rect>
+              </svg>
+            </button>
+
+            <!-- Zen Mode -->
+            <button id="btn-zen-mode" class="btn-action" title="Zen Reading Mode">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Reading Progress Bar -->
+      <div class="reading-progress-bar" id="reading-progress-bar"></div>
+
+      <!-- Article Container -->
+      <article class="article-container" id="article-container">
+        <!-- Frontmatter Hero Card -->
+        <div class="frontmatter-hero" id="frontmatter-hero" style="display: none;">
+          <div class="hero-top">
+            <span class="hero-type-badge" id="hero-type-badge">Paper</span>
+            <div class="hero-scores" id="hero-scores"></div>
+            <span class="hero-date-badge" id="hero-date-badge"></span>
+          </div>
+
+          <h1 class="hero-title" id="hero-title">Document Title</h1>
+
+          <div class="hero-meta-row" id="hero-meta-row">
+            <div class="hero-authors" id="hero-authors"></div>
+            <div class="hero-source" id="hero-source"></div>
+          </div>
+
+          <div class="hero-tags" id="hero-tags"></div>
+          <div class="hero-summary" id="hero-summary" style="display: none;"></div>
+        </div>
+
+        <!-- Markdown Render Body -->
+        <div class="markdown-body" id="markdown-body">
+          <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h2>Select a research document from the left navigation</h2>
+            <p>Grouped date-wise to track your research progress over time.</p>
+          </div>
+        </div>
+
+        <!-- Raw Markdown Body (hidden by default) -->
+        <pre class="raw-markdown-body" id="raw-markdown-body" style="display: none;"><code></code></pre>
+
+        <!-- Backlinks / Related Documents Panel -->
+        <section class="backlinks-section" id="backlinks-section" style="display: none;">
+          <div class="backlinks-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <h3>Linked References (<span id="backlinks-count">0</span>)</h3>
+          </div>
+          <div class="backlinks-grid" id="backlinks-grid"></div>
+        </section>
+
+        <!-- Document Footer Navigation (Prev / Next) -->
+        <div class="doc-nav-footer" id="doc-nav-footer"></div>
+      </article>
+    </main>
+
+    <!-- RIGHT OUTLINE / TOC SIDEBAR -->
+    <aside class="outline-sidebar" id="outline-sidebar">
+      <div class="outline-header">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="21" y1="6" x2="3" y2="6"></line>
+          <line x1="15" y1="12" x2="3" y2="12"></line>
+          <line x1="17" y1="18" x2="3" y2="18"></line>
+        </svg>
+        <span>On this page</span>
+      </div>
+      <nav class="outline-nav" id="outline-nav">
+        <ul class="outline-list" id="outline-list">
+          <li class="outline-empty">No headings found</li>
+        </ul>
+      </nav>
+      <div class="outline-footer">
+        <button id="btn-scroll-top" class="btn-text-subtle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+          Back to top
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- MODAL: LOG NEW RESEARCH ENTRY -->
+  <div class="modal-overlay" id="log-modal" style="display: none;">
+    <div class="modal-card log-modal-card">
+      <div class="log-modal-header">
+        <div class="log-header-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <h2>Log New Research Entry</h2>
+        </div>
+        <button id="btn-close-log-modal" class="btn-icon">✕</button>
+      </div>
+
+      <form id="log-research-form" class="log-modal-body">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="log-date">Research Date</label>
+            <input type="date" id="log-date" required value="2026-08-15">
+          </div>
+          <div class="form-group flex-1">
+            <label for="log-type">Document Type</label>
+            <select id="log-type">
+              <option value="paper">Research Paper (Raw Source)</option>
+              <option value="playbook">Playbook / Deliverable</option>
+              <option value="thesis">Thesis Idea</option>
+              <option value="article">Compiled Article / Note</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="log-title">Research Title / Paper Name *</label>
+          <input type="text" id="log-title" placeholder="e.g. Lightweight Explainable FL for Healthcare IoT" required autocomplete="off">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="log-authors">Authors / Year</label>
+            <input type="text" id="log-authors" placeholder="e.g. John Doe et al. (2026)" autocomplete="off">
+          </div>
+          <div class="form-group flex-1">
+            <label for="log-source">Source URL / ArXiv Link</label>
+            <input type="url" id="log-source" placeholder="https://arxiv.org/abs/..." autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="log-tags">Tags (comma-separated)</label>
+            <input type="text" id="log-tags" placeholder="federated-learning, explainable-ai, healthcare-iot" autocomplete="off">
+          </div>
+          <div class="form-group flex-1">
+            <label for="log-quality">Quality Rating</label>
+            <select id="log-quality">
+              <option value="5">★★★★★ 5/5</option>
+              <option value="4">★★★★☆ 4/5</option>
+              <option value="3">★★★☆☆ 3/5</option>
+              <option value="2">★★☆☆☆ 2/5</option>
+              <option value="1">★☆☆☆☆ 1/5</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="log-summary">Executive Summary</label>
+          <textarea id="log-summary" rows="2" placeholder="Brief summary of key innovations, methodology, and results..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="log-content">Detailed Markdown Notes & Findings (Optional)</label>
+          <textarea id="log-content" rows="4" placeholder="## Key Findings&#10;- Main results&#10;&#10;## Thesis Novelty&#10;- Potential applications..."></textarea>
+        </div>
+
+        <div class="log-modal-footer">
+          <button type="button" id="btn-cancel-log" class="btn-action">Cancel</button>
+          <button type="submit" id="btn-submit-log" class="btn-action-primary">
+            <span>💾 Save & Log Research</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- COMMAND PALETTE SEARCH MODAL -->
+  <div class="modal-overlay" id="search-modal" style="display: none;">
+    <div class="modal-card search-modal-card">
+      <div class="search-modal-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input type="text" id="modal-search-input" placeholder="Search papers, playbooks, tags, content..." autocomplete="off">
+        <kbd class="modal-esc-badge" id="btn-close-search">ESC</kbd>
+      </div>
+      <div class="search-modal-results" id="search-modal-results">
+        <div class="search-hint">Type keywords to search across all wiki files...</div>
+      </div>
+      <div class="search-modal-footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+        <span><kbd>↵</kbd> to open</span>
+        <span><kbd>esc</kbd> to dismiss</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KNOWLEDGE GRAPH MODAL -->
+  <div class="modal-overlay" id="graph-modal" style="display: none;">
+    <div class="modal-card graph-modal-card">
+      <div class="graph-modal-header">
+        <div class="graph-header-left">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <h2>Wiki Knowledge Graph</h2>
+          <span class="graph-legend-badge">Interactive Network</span>
+        </div>
+        <div class="graph-header-right">
+          <button id="btn-reset-graph" class="btn-action-small">Reset View</button>
+          <button id="btn-close-graph" class="btn-icon">✕</button>
+        </div>
+      </div>
+      <div class="graph-canvas-container" id="graph-container">
+        <canvas id="graph-canvas"></canvas>
+        <div class="graph-tooltip" id="graph-tooltip" style="display: none;"></div>
+      </div>
+      <div class="graph-modal-footer">
+        <div class="graph-legend">
+          <span class="legend-item"><span class="legend-dot hub"></span> Hub & Index</span>
+          <span class="legend-item"><span class="legend-dot playbook"></span> Playbooks</span>
+          <span class="legend-item"><span class="legend-dot paper"></span> Papers</span>
+          <span class="legend-item"><span class="legend-dot article"></span> Articles / Notes</span>
+        </div>
+        <span class="graph-help-text">Click node to open • Drag to pan • Scroll to zoom</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast" style="display: none;">
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.1/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+---
+date: 2026-08-21
+title: "DYCL Swing Trade Checklist & Decision (7.0/10 — Grade B (Speculative))"
+type: checklist
+tags: [checklist, dycl, hold-/-trail-stop, nse, swing-trade]
+quality: 5
+confidence: high
+stock_symbol: "DYCL"
+company_name: "Dynamic Cables Ltd"
+score: 7.0
+grade: "Grade B (Speculative)"
+verdict: "HOLD / TRAIL STOP"
+target_1: "₹499.61 (+12.03%)"
+stop_loss: "₹419.12 (-6.02%)"
+summary: "10-point institutional checklist evaluation for Dynamic Cables Ltd (DYCL). Verdict: HOLD / TRAIL STOP with 7.0/10 points."
+---
+
+# 📋 Swing Trade Setup Checklist: Dynamic Cables Ltd (`DYCL`)
+
+Comprehensive 10-point institutional swing trading analysis evaluating multi-factor technicals, relative strength vs NIFTY 50, Screener.in fundamentals, NSE results calendar, and asymmetric trade structure.
+
+---
+
+## 🏆 Executive Scorecard & Actionable Verdict
+
+| Overall Score | Rating Grade | Actionable Decision | Sizing & Execution Guidance |
+| :---: | :---: | :---: | :---: |
+| **`7.0 / 10.0`** | **Grade B (Speculative)** | **HOLD / TRAIL STOP** | **Half Allocation (50% Position Sizing)** |
+
+> **Strategy Takeaway**: Maintain holding. Trend and relative strength remain strong. Trail stop-loss to ₹419.12 (below 20 EMA).
+
+---
+
+## 🎯 Swing Trade Execution Parameters
+
+| Parameter | Value | Details / Rationale |
+| :--- | :--- | :--- |
+| **Current Market Price** | **₹445.95** | 1D Change: `-1.53%` |
+| **Recommended Entry Zone** | **₹445.95** | Optimal accumulation trigger |
+| **Primary Target (2R)** | **₹499.61 (+12.03%)** | 1st profit booking pivot ($R:R \ge 1:2.0$) |
+| **Runner Target (3R)** | **₹526.44 (+18.05%)** | Extended trend target |
+| **Strict Stop Loss** | **₹419.12 (-6.02%)** | Hard technical invalidation level |
+| **Risk-to-Reward Ratio** | **`1 : 2.5`** | Institutional asymmetric skew |
+| **Next Quarterly Results** | **Not Scheduled (Not Scheduled)** | Event Risk Level: `LOW` |
+| **Invalidation Criteria** | Daily close below ₹419.12 or breakdown below 20 EMA on heavy volume. | Technical exit rule |
+
+---
+
+## 📊 10-Point Institutional Scorecard Breakdown
+
+| # | Criterion | Status | Points | Evaluation Details |
+| :- | :--- | :---: | :---: | :--- |
+| 1 | **Primary Trend Alignment** | `PASS` | `1.00 / 1.0` | Perfect Bullish Stack: Price (₹445.95) > 20 EMA (₹425.29) > 50 EMA (₹395.32) > 200 EMA (₹366.47). |
+| 2 | **Relative Strength vs NIFTY** | `PASS` | `1.00 / 1.0` | Elite Market Leader (Top 5% RS cohort). 20-Day Alpha vs NIFTY: +9.17%. |
+| 3 | **Chart Setup & Base Geometry** | `PASS` | `0.70 / 1.0` | Well-defined trending base without exhaustion. |
+| 4 | **Volume Signature & Accumulation** | `FAIL` | `0.25 / 1.0` | Low volume (0.32x). Risk of low-conviction or false move. |
+| 5 | **Risk-to-Reward Ratio** | `PASS` | `0.80 / 1.0` | Acceptable swing asymmetry: Target 1 (+12.03%) vs Stop Loss (-6.02%). |
+| 6 | **Fundamental Quality (Screener.in)** | `NEUTRAL` | `0.40 / 1.0` | Moderate/weak fundamental quality or elevated valuation (Score: 40.0/100). |
+| 7 | **Earnings & Binary Event Risk** | `PASS` | `1.00 / 1.0` | Clear holding runway: Results in Not Scheduled. No binary gap risk. |
+| 8 | **News Flow & Catalysts** | `PASS` | `0.90 / 1.0` | Positive business catalysts / order inflow announcements detected. |
+| 9 | **Technical Invalidation Integrity** | `PASS` | `0.70 / 1.0` | Well-defined invalidation level below ₹419.12. |
+| 10 | **Market Regime Alignment** | `FAIL` | `0.20 / 1.0` | Market in Risk-Off / Defensive regime. Headwinds for swing breakout longs. |
+
+---
+
+## 🏢 Fundamentals & Capital Efficiency ([Screener.in](https://www.screener.in/company/DYCL/))
+
+- **Market Capitalization**: `₹             Cr.`
+- **Stock P/E**: `` | **Book Value**: `₹`
+- **ROCE**: `%` | **ROE**: `%`
+- **Sales YoY Growth**: `N/A%` | **PAT YoY Growth**: `N/A%`
+
+### Screener Insights:
+**Pros:**
+- ✅ Solid market position in sectoral cohort.
+
+**Cons / Watchouts:**
+- ⚠️ No severe structural cons listed.
+
+---
+
+## 📅 NSE Results Calendar & Corporate Actions
+- **Next Financial Results Meeting**: `Not Scheduled (Not Scheduled)`
+- **Event Risk Rating**: `🟢 No Immediate Board Meeting (LOW RISK)`
+- **Event Assessment**: No immediate results meeting scheduled by company on NSE.
+
+---
+
+## 📰 Recent News & Catalysts
+- **[📰 Corporate News] Is Weakness In Dynamic Cables Limited (NSE:DYCL) Stock A Sign That The Market Could be Wrong Given Its Strong Financial Prospects? - simplywall.st** — *simplywall.st* (Thu, 22 Jan 2026 08:00:00 GMT)
+- **[📰 Corporate News] DYCL Share Price Today - Dynamic Cables Stock Analysis - Equitypandit** — *Equitypandit* (Fri, 06 Feb 2026 04:11:45 GMT)
+- **[📊 Financial Results] We Ran A Stock Scan For Earnings Growth And Dynamic Cables (NSE:DYCL) Passed With Ease - simplywall.st** — *simplywall.st* (Tue, 26 May 2026 07:00:00 GMT)
+- **[📰 Corporate News] Dynamic Cables Ltd. Share Price Today - Dynamic Cables Ltd. Stock Price Live NSE/BSE - CNBC TV18** — *CNBC TV18* (Sun, 18 Jan 2026 01:03:37 GMT)
+
+---
+*Checklist evaluated and generated by Antigravity `swing-stock-advisor` on 2026-08-21 01:40:47 IST.*
